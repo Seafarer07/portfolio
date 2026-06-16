@@ -27,7 +27,7 @@ const EXPERIENCES = [
     company: 'Eclectic Consulting',
     role:    'Intern Web Developer',
     period:  'Oct 2025 – Apr 2026',
-    desc:    'Shipped two production apps from scratch — Ecosystem (ERP) and Jarvies (customer portal) — using Laravel 11, Livewire, Alpine.js, and MySQL. Built a 7-stage helpdesk with threaded chat and multi-level approval, implemented cross-portal SSO with Microsoft OAuth 2.0, and owned deployment end-to-end.',
+    desc:    'Shipped two production apps from scratch, Ecosystem (ERP) and Jarvies (customer portal), using Laravel 11, Livewire, Alpine.js, and MySQL. Built a 7-stage helpdesk with threaded chat and multi-level approval, implemented cross-portal SSO with Microsoft OAuth 2.0, and owned deployment end-to-end.',
   },
   {
     company: 'UAJY',
