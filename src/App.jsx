@@ -1,8 +1,18 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Github, Linkedin, Mail, Instagram, ExternalLink, ArrowUpRight, ChevronLeft, ChevronRight } from 'lucide-react';
 import emailjs from '@emailjs/browser';
-import baratieImg   from './assets/images/baratie.png';
 import reusemartImg from './assets/images/reusemart.png';
+import Baratie1    from './assets/images/Baratie1.png';
+import Baratie2    from './assets/images/Baratie2.png';
+import Baratie3    from './assets/images/Baratie3.png';
+import Eco1        from './assets/images/Eco1.png';
+import Eco2        from './assets/images/Eco2.png';
+import Eco3        from './assets/images/Eco3.png';
+import J1          from './assets/images/J1.png';
+import J2          from './assets/images/J2.png';
+import TA1         from './assets/images/TA1.png';
+import TA2         from './assets/images/TA2.png';
+import TA3         from './assets/images/TA3.png';
 import './App.css';
 
 /* ─── Data ───────────────────────────────────────────────────────────────── */
@@ -50,7 +60,7 @@ const PROJECTS = [
     tech:        ['Laravel 11', 'Livewire', 'Alpine.js', 'MySQL', 'Tailwind CSS', 'Laravel Sanctum'],
     github:      null,
     demo:        "https://eclectic.co.id/",
-    images:      [],
+    images:      [Eco1, Eco2, Eco3],
   },
 
   {
@@ -59,7 +69,7 @@ const PROJECTS = [
     tech:        ['Laravel 11', 'Livewire', 'Alpine.js', 'MySQL', 'Tailwind CSS', 'Laravel Sanctum'],
     github:      null,
     demo:        "https://help.eclectic.co.id/",
-    images:      [],
+    images:      [J1, J2],
   },
   {
     title:       'Tennis Artist Academy',
@@ -67,7 +77,7 @@ const PROJECTS = [
     tech:        ['React.js', 'Vite', 'Tailwind CSS'],
     github:      null,
     demo:        "https://tennisartistacademy.com/",
-    images:      [],
+    images:      [TA1,TA2,TA3],
   },
   {
     title:       'Baratie Restaurant',
@@ -75,7 +85,7 @@ const PROJECTS = [
     tech:        ['Laravel', 'MySQL', 'Blade', 'Bootstrap'],
     github:      "https://github.com/Seafarer07/BaratieResto",
     demo:        null,
-    images:      [baratieImg],
+    images:      [Baratie1, Baratie2, Baratie3],
   },
   {
     title:       'Reuse Mart',
@@ -299,18 +309,26 @@ const Experience = () => {
 const ProjCard = ({ p, delay }) => {
   const [ref, inView] = useInView(0);
   const [imgIdx, setImgIdx] = useState(0);
+  const [dir, setDir] = useState('next');
   const hasImages = p.images && p.images.length > 0;
   const multi     = hasImages && p.images.length > 1;
 
   const prev = useCallback(e => {
     e.stopPropagation();
+    setDir('prev');
     setImgIdx(i => (i - 1 + p.images.length) % p.images.length);
   }, [p.images]);
 
   const next = useCallback(e => {
     e.stopPropagation();
+    setDir('next');
     setImgIdx(i => (i + 1) % p.images.length);
   }, [p.images]);
+
+  const goTo = useCallback((target) => {
+    setDir(target > imgIdx ? 'next' : 'prev');
+    setImgIdx(target);
+  }, [imgIdx]);
 
   return (
     <article
@@ -320,7 +338,7 @@ const ProjCard = ({ p, delay }) => {
     >
       {hasImages && (
         <div className="proj-img">
-          <img src={p.images[imgIdx]} alt={`${p.title} preview ${imgIdx + 1}`} loading="lazy" />
+          <img key={imgIdx} src={p.images[imgIdx]} alt={`${p.title} preview ${imgIdx + 1}`} loading="lazy" className={`proj-slide--${dir}`} />
           {multi && (
             <>
               <button className="proj-img__arrow proj-img__arrow--prev" onClick={prev} aria-label="Previous image">
@@ -334,7 +352,7 @@ const ProjCard = ({ p, delay }) => {
                   <span
                     key={i}
                     className={`proj-img__dot${i === imgIdx ? ' proj-img__dot--active' : ''}`}
-                    onClick={e => { e.stopPropagation(); setImgIdx(i); }}
+                    onClick={e => { e.stopPropagation(); goTo(i); }}
                   />
                 ))}
               </div>

@@ -436,14 +436,27 @@ img { display: block; max-width: 100%; }
 
 .proj-img img {
   width: 100%;
-  height: 175px;
-  object-fit: cover;
+  height: 240px;
+  object-fit: contain;
+  background: #0d1b2e;
   opacity: 0.65;
   transition: opacity 0.25s var(--ease);
   display: block;
 }
 
 .proj-card:hover .proj-img img { opacity: 0.85; }
+
+@keyframes slide-from-right {
+  from { transform: translateX(100%); }
+  to   { transform: translateX(0); }
+}
+@keyframes slide-from-left {
+  from { transform: translateX(-100%); }
+  to   { transform: translateX(0); }
+}
+
+.proj-slide--next { animation: slide-from-right 0.35s var(--ease); }
+.proj-slide--prev { animation: slide-from-left  0.35s var(--ease); }
 
 .proj-img__arrow {
   position: absolute;
