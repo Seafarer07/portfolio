@@ -45,18 +45,35 @@ const EXPERIENCES = [
 
 const PROJECTS = [
   {
-    title:       'Ecosystem & Jarvies',
-    description: 'A pair of enterprise platforms built end-to-end at Eclectic Consulting: Ecosystem, an internal ERP system, and Jarvies, a customer-facing portal. Ships with a 7-stage helpdesk ticketing workflow, threaded conversation threads, cross-portal single sign-on, and Microsoft OAuth 2.0 integration. Both are live in production.',
+    title:       'Ecosystem',
+    description: 'Internal enterprise resource planning platform built at Eclectic Consulting. Covers multi-org user management, a 7-stage helpdesk ticketing system with threaded chat and mandays negotiation, role-based access control, and Microsoft OAuth 2.0 integration. Live in production.',
     tech:        ['Laravel 11', 'Livewire', 'Alpine.js', 'MySQL', 'Tailwind CSS', 'Laravel Sanctum'],
     github:      null,
-    demo:        null,
+    demo:        "https://eclectic.co.id/",
+    images:      [],
+  },
+
+  {
+    title:       'Jarvies',
+    description: 'Customer-facing portal paired with Ecosystem, built for Eclectic Consulting clients. Features cross-portal single sign-on via a custom auth provider, seamless session handoff, and a clean interface tailored for end users. Live in production.',
+    tech:        ['Laravel 11', 'Livewire', 'Alpine.js', 'MySQL', 'Tailwind CSS', 'Laravel Sanctum'],
+    github:      null,
+    demo:        "https://help.eclectic.co.id/",
+    images:      [],
+  },
+  {
+    title:       'Tennis Artist Academy',
+    description: 'Production website for Tennis Artist Academy featuring course catalog, registration flow, and integrated checkout. Built with a clean, mobile-first design focused on conversion and ease of use.',
+    tech:        ['React.js', 'Vite', 'Tailwind CSS'],
+    github:      null,
+    demo:        "https://tennisartistacademy.com/",
     images:      [],
   },
   {
     title:       'Baratie Restaurant',
-    description: 'A full-stack restaurant management system built to handle real daily operations. Covers real-time inventory tracking, integrated payment processing, and a centralized admin dashboard for managing orders, menus, and staff. Designed with speed and ease of use as top priorities.',
+    description: 'A full-stack restaurant management system built to handle real daily operations. Covers real-time inventory tracking, integrated payment processing, and a centralized admin dashboard for managing orders, menus, and staff.',
     tech:        ['Laravel', 'MySQL', 'Blade', 'Bootstrap'],
-    github:      'https://github.com/Seafarer07',
+    github:      "https://github.com/Seafarer07/BaratieResto",
     demo:        null,
     images:      [baratieImg],
   },
@@ -64,7 +81,7 @@ const PROJECTS = [
     title:       'Reuse Mart',
     description: 'A second-hand goods marketplace with a complete buyer and seller experience. Features advanced search with filters, a seller management dashboard, and a clean checkout flow built to handle real transactional traffic without friction.',
     tech:        ['Laravel', 'Tailwind CSS', 'MySQL'],
-    github:      null,
+    github:      "https://github.com/bintang-anindya/P3L_Reborn",
     demo:        null,
     images:      [reusemartImg],
   },
@@ -280,7 +297,7 @@ const Experience = () => {
 /* ─── Projects ────────────────────────────────────────────────────────────── */
 
 const ProjCard = ({ p, delay }) => {
-  const [ref, inView] = useInView(0.08);
+  const [ref, inView] = useInView(0);
   const [imgIdx, setImgIdx] = useState(0);
   const hasImages = p.images && p.images.length > 0;
   const multi     = hasImages && p.images.length > 1;
@@ -356,7 +373,7 @@ const Projects = () => (
     <h2 className="section-heading">Projects</h2>
     <div className="proj-list">
       {PROJECTS.map((p, i) => (
-        <ProjCard key={p.title} p={p} delay={i * 120} />
+        <ProjCard key={p.title} p={p} delay={i * 60} />
       ))}
     </div>
   </section>
