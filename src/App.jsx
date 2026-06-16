@@ -81,7 +81,7 @@ const PROJECTS = [
     title:       'Reuse Mart',
     description: 'A second-hand goods marketplace with a complete buyer and seller experience. Features advanced search with filters, a seller management dashboard, and a clean checkout flow built to handle real transactional traffic without friction.',
     tech:        ['Laravel', 'Tailwind CSS', 'MySQL'],
-    github:      "https://github.com/bintang-anindya/P3L_Reborn",
+    github:      "https://github.com/Seafarer07/ReuseMart",
     demo:        null,
     images:      [reusemartImg],
   },
