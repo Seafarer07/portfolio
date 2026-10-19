@@ -1,4 +1,4 @@
-import { memo, useEffect, useRef, useState } from 'react';
+import { memo, useRef, useState } from 'react';
 import { ArrowUpRight } from 'lucide-react';
 import { SKILL_GROUPS } from '../data/site';
 import profileImg from '../assets/images/profile.webp';
@@ -11,60 +11,20 @@ import { SectionHeading } from './Chrome';
 const Hero = memo(({ ready }) => {
   const { t } = useT();
   const h = t.hero;
-  const cardRef = useRef(null);
-
-  // Stop the endless float animation while the card is off screen
-  useEffect(() => {
-    const el = cardRef.current;
-    if (!el) return;
-    const obs = new IntersectionObserver(([entry]) => {
-      el.dataset.offscreen = String(!entry.isIntersecting);
-    });
-    obs.observe(el);
-    return () => obs.disconnect();
-  }, []);
-
-  const lines = [
-    <><span className="tok-k">const</span> <span className="tok-v">natanael</span> <span className="tok-p">= {'{'}</span></>,
-    <>  <span className="tok-key">role</span><span className="tok-p">:</span> <span className="tok-s">"Full Stack Developer"</span><span className="tok-p">,</span></>,
-    <>  <span className="tok-key">stack</span><span className="tok-p">: [</span><span className="tok-s">"Laravel"</span><span className="tok-p">,</span> <span className="tok-s">"Livewire"</span><span className="tok-p">,</span> <span className="tok-s">"React"</span><span className="tok-p">],</span></>,
-    <>  <span className="tok-key">currently</span><span className="tok-p">:</span> <span className="tok-s">"Eclectic Consulting"</span><span className="tok-p">,</span></>,
-    <>  <span className="tok-key">shipped</span><span className="tok-p">:</span> <span className="tok-n">3</span><span className="tok-p">,</span> <span className="tok-c">{h.codeComment}</span></>,
-    <>  <span className="tok-key">openToWork</span><span className="tok-p">:</span> <span className="tok-n">true</span><span className="tok-p">,</span></>,
-    <><span className="tok-p">{'}'};</span></>,
-  ];
 
   return (
     <section id="top" className={`hero${ready ? ' hero--in' : ''}`}>
-      <div className="hero__text">
-        <p className="hero__item hero__eyebrow" style={{ '--i': 0 }}>{h.eyebrow}</p>
-        <h1 className="hero__item hero__title" style={{ '--i': 1 }}>
-          {h.titleA}<em>{h.titleEm}</em>{h.titleB}
-        </h1>
-        <p className="hero__item hero__desc" style={{ '--i': 2 }}>
-          {h.descA}
-          <a href="https://eclectic.co.id" target="_blank" rel="noopener noreferrer" className="inline-link">
-            Eclectic Consulting
-          </a>{h.descB}
-        </p>
-        <div className="hero__item hero__cta" style={{ '--i': 3 }}>
-          <a href="#projects" className="btn btn--solid">{h.ctaWork}</a>
-          <a href="#contact" className="btn">{h.ctaContact}</a>
-        </div>
-      </div>
-
-      <div ref={cardRef} className="hero__item hero__card" style={{ '--i': 3 }} aria-hidden="true">
-        <div className="hero__card-bar">
-          <i /><i /><i />
-          <span>developer.js</span>
-        </div>
-        <pre className="hero__code">
-          {lines.map((line, i) => (
-            <code key={i} className="hero__line" style={{ '--l': i }}>{line}</code>
-          ))}
-        </pre>
-        <div className="hero__card-foot">
-          <span className="avail-dot" />
+      <h1 className="hero__item hero__title" style={{ '--i': 0 }}>{h.title}</h1>
+      <p className="hero__item hero__desc" style={{ '--i': 1 }}>
+        {h.descA}
+        <a href="https://eclectic.co.id" target="_blank" rel="noopener noreferrer" className="inline-link">
+          Eclectic Consulting
+        </a>{h.descB}
+      </p>
+      <div className="hero__item hero__cta" style={{ '--i': 2 }}>
+        <a href="#projects" className="btn btn--solid">{h.ctaWork}</a>
+        <div className="avail-badge">
+          <span className="avail-dot" aria-hidden="true" />
           {h.avail}
         </div>
       </div>
