@@ -1,18 +1,17 @@
-import React, { useState, useEffect, useLayoutEffect, useRef, useCallback } from 'react';
+import { memo, useState, useEffect, useLayoutEffect, useRef, useCallback } from 'react';
 import { Github, Linkedin, Mail, Instagram, ExternalLink, ArrowUpRight, ChevronLeft, ChevronRight, Sun, Moon, Menu, X } from 'lucide-react';
-import emailjs from '@emailjs/browser';
-import reusemartImg from './assets/images/reusemart.png';
-import Baratie1    from './assets/images/Baratie1.png';
-import Baratie2    from './assets/images/Baratie2.png';
-import Baratie3    from './assets/images/Baratie3.png';
-import Eco1        from './assets/images/Eco1.png';
-import Eco2        from './assets/images/Eco2.png';
-import Eco3        from './assets/images/Eco3.png';
-import J1          from './assets/images/J1.png';
-import J2          from './assets/images/J2.png';
-import TA1         from './assets/images/TA1.png';
-import TA2         from './assets/images/TA2.png';
-import TA3         from './assets/images/TA3.png';
+import reusemartImg from './assets/images/reusemart.webp';
+import Baratie1    from './assets/images/Baratie1.webp';
+import Baratie2    from './assets/images/Baratie2.webp';
+import Baratie3    from './assets/images/Baratie3.webp';
+import Eco1        from './assets/images/Eco1.webp';
+import Eco2        from './assets/images/Eco2.webp';
+import Eco3        from './assets/images/Eco3.webp';
+import J1          from './assets/images/J1.webp';
+import J2          from './assets/images/J2.webp';
+import TA1         from './assets/images/TA1.webp';
+import TA2         from './assets/images/TA2.webp';
+import TA3         from './assets/images/TA3.webp';
 import './App.css';
 
 /* ─── Data ───────────────────────────────────────────────────────────────── */
@@ -135,19 +134,35 @@ const useInView = (threshold = 0.15) => {
 };
 
 
-const useMouseSpotlight = () => {
+/* Moves a fixed gradient element with transform only, so the cursor never
+   triggers style recalculation or repaint of the page. */
+const Spotlight = () => {
+  const ref = useRef(null);
+
   useEffect(() => {
-    let raf;
-    const move = ({ clientX, clientY }) => {
-      cancelAnimationFrame(raf);
-      raf = requestAnimationFrame(() => {
-        document.documentElement.style.setProperty('--mx', `${clientX}px`);
-        document.documentElement.style.setProperty('--my', `${clientY}px`);
-      });
+    const el = ref.current;
+    if (!el || !window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+    const half = el.offsetWidth / 2;
+    let raf = 0;
+    let x = 0;
+    let y = 0;
+    const paint = () => {
+      raf = 0;
+      el.style.transform = `translate3d(${x - half}px, ${y - half}px, 0)`;
+    };
+    const move = e => {
+      x = e.clientX;
+      y = e.clientY;
+      if (!raf) raf = requestAnimationFrame(paint);
     };
     window.addEventListener('mousemove', move, { passive: true });
-    return () => { window.removeEventListener('mousemove', move); cancelAnimationFrame(raf); };
+    return () => {
+      window.removeEventListener('mousemove', move);
+      cancelAnimationFrame(raf);
+    };
   }, []);
+
+  return <div ref={ref} className="spotlight" aria-hidden="true" />;
 };
 
 const useActiveSection = () => {
@@ -192,7 +207,9 @@ const useScrollState = () => {
   const [state, setState] = useState({ scrolled: false, hidden: false });
   useEffect(() => {
     let last = window.scrollY;
-    const onScroll = () => {
+    let raf = 0;
+    const update = () => {
+      raf = 0;
       const y = window.scrollY;
       setState(prev => {
         const scrolled = y > 50;
@@ -201,8 +218,12 @@ const useScrollState = () => {
       });
       last = y;
     };
+    const onScroll = () => { if (!raf) raf = requestAnimationFrame(update); };
     window.addEventListener('scroll', onScroll, { passive: true });
-    return () => window.removeEventListener('scroll', onScroll);
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      cancelAnimationFrame(raf);
+    };
   }, []);
   return state;
 };
@@ -303,7 +324,7 @@ const Header = ({ active, theme, onToggleTheme, ready }) => {
 
 /* ─── Fixed side rails (socials left, email right) ────────────────────────── */
 
-const SideRails = ({ ready }) => (
+const SideRails = memo(({ ready }) => (
   <>
     <div className={`side side--left${ready ? ' side--in' : ''}`}>
       <ul>
@@ -320,7 +341,7 @@ const SideRails = ({ ready }) => (
       <a href={`mailto:${EMAIL}`} className="side__email">{EMAIL}</a>
     </div>
   </>
-);
+));
 
 /* ─── Section heading ─────────────────────────────────────────────────────── */
 
@@ -344,7 +365,7 @@ const CODE_LINES = [
   <><span className="tok-p">{'}'};</span></>,
 ];
 
-const Hero = ({ ready }) => (
+const Hero = memo(({ ready }) => (
   <section id="top" className={`hero${ready ? ' hero--in' : ''}`}>
     <div className="hero__text">
       <p className="hero__item hero__eyebrow" style={{ '--i': 0 }}>Natanael Adi Wicaksono</p>
@@ -380,11 +401,11 @@ const Hero = ({ ready }) => (
       </div>
     </div>
   </section>
-);
+));
 
 /* ─── About ───────────────────────────────────────────────────────────────── */
 
-const About = () => {
+const About = memo(() => {
   const [bodyRef,   bodyInView]   = useInView(0.1);
   const [skillsRef, skillsInView] = useInView(0.1);
 
@@ -419,11 +440,11 @@ const About = () => {
       </ul>
     </section>
   );
-};
+});
 
 /* ─── Experience ──────────────────────────────────────────────────────────── */
 
-const Experience = () => {
+const Experience = memo(() => {
   const [active, setActive]     = useState(0);
   const [panelRef, panelInView] = useInView(0.1);
   const exp = EXPERIENCES[active];
@@ -470,33 +491,25 @@ const Experience = () => {
       </a>
     </section>
   );
-};
+});
 
 /* ─── Projects ────────────────────────────────────────────────────────────── */
 
-const ProjCard = ({ p, reverse }) => {
+const ProjCard = memo(({ p, reverse }) => {
   const [ref, inView] = useInView(0);
   const [imgIdx, setImgIdx] = useState(0);
-  const [dir, setDir] = useState('next');
   const hasImages = p.images && p.images.length > 0;
   const multi     = hasImages && p.images.length > 1;
 
   const prev = useCallback(e => {
     e.stopPropagation();
-    setDir('prev');
     setImgIdx(i => (i - 1 + p.images.length) % p.images.length);
   }, [p.images]);
 
   const next = useCallback(e => {
     e.stopPropagation();
-    setDir('next');
     setImgIdx(i => (i + 1) % p.images.length);
   }, [p.images]);
-
-  const goTo = useCallback((target) => {
-    setDir(target > imgIdx ? 'next' : 'prev');
-    setImgIdx(target);
-  }, [imgIdx]);
 
   return (
     <article
@@ -505,7 +518,20 @@ const ProjCard = ({ p, reverse }) => {
     >
       {hasImages && (
         <div className="proj-img">
-          <img key={imgIdx} src={p.images[imgIdx]} alt={`${p.title} preview ${imgIdx + 1}`} loading="lazy" className={`proj-slide--${dir}`} />
+          <div className="proj-track" style={{ transform: `translate3d(${-100 * imgIdx}%, 0, 0)` }}>
+            {p.images.map((src, i) => (
+              <img
+                key={src}
+                src={src}
+                alt={`${p.title} preview ${i + 1}`}
+                width="1100"
+                height="558"
+                decoding="async"
+                loading={i === 0 || !inView ? 'lazy' : 'eager'}
+                aria-hidden={i !== imgIdx}
+              />
+            ))}
+          </div>
           {multi && (
             <>
               <button className="proj-img__arrow proj-img__arrow--prev" onClick={prev} aria-label="Previous image">
@@ -519,7 +545,7 @@ const ProjCard = ({ p, reverse }) => {
                   <span
                     key={i}
                     className={`proj-img__dot${i === imgIdx ? ' proj-img__dot--active' : ''}`}
-                    onClick={e => { e.stopPropagation(); goTo(i); }}
+                    onClick={e => { e.stopPropagation(); setImgIdx(i); }}
                   />
                 ))}
               </div>
@@ -549,9 +575,9 @@ const ProjCard = ({ p, reverse }) => {
       </div>
     </article>
   );
-};
+});
 
-const Projects = () => (
+const Projects = memo(() => (
   <section id="projects" className="content-section">
     <SectionHeading num="03">Some Things I've Built</SectionHeading>
     <div className="proj-list">
@@ -560,11 +586,11 @@ const Projects = () => (
       ))}
     </div>
   </section>
-);
+));
 
 /* ─── Contact ─────────────────────────────────────────────────────────────── */
 
-const Contact = () => {
+const Contact = memo(() => {
   const [formRef, formInView] = useInView(0.1);
   const [form,    setForm]    = useState({ name: '', email: '', message: '' });
   const [status,  setStatus]  = useState(null);
@@ -584,6 +610,7 @@ const Contact = () => {
     e.preventDefault();
     setStatus('sending');
     try {
+      const { default: emailjs } = await import('@emailjs/browser');
       await emailjs.send(
         'service_zle8ngk',
         'template_d74ysi6',
@@ -665,11 +692,11 @@ const Contact = () => {
       </form>
     </section>
   );
-};
+});
 
 /* ─── Footer ──────────────────────────────────────────────────────────────── */
 
-const Footer = () => (
+const Footer = memo(() => (
   <footer className="footer">
     <div className="footer__socials">
       {SOCIALS.map(({ label, href, Icon }) => (
@@ -687,22 +714,29 @@ const Footer = () => (
       </a>
     </p>
   </footer>
-);
+));
 
 /* ─── App ─────────────────────────────────────────────────────────────────── */
 
+/* The intro loader plays once per browser session; later visits go straight to content. */
+const seenIntro = () => {
+  try { return sessionStorage.getItem('intro-seen') === '1'; } catch { return false; }
+};
+
 const App = () => {
-  useMouseSpotlight();
   const active = useActiveSection();
   const [theme, toggleTheme] = useTheme();
-  const [ready, setReady] = useState(false);
-  const [showLoader, setShowLoader] = useState(true);
+  const [skipIntro] = useState(seenIntro);
+  const [ready, setReady] = useState(skipIntro);
+  const [showLoader, setShowLoader] = useState(!skipIntro);
 
   useEffect(() => {
-    const t1 = setTimeout(() => setReady(true), 2000);
-    const t2 = setTimeout(() => setShowLoader(false), 2700);
+    if (skipIntro) return;
+    const t1 = setTimeout(() => setReady(true), 1600);
+    const t2 = setTimeout(() => setShowLoader(false), 2200);
+    try { sessionStorage.setItem('intro-seen', '1'); } catch { /* storage unavailable */ }
     return () => { clearTimeout(t1); clearTimeout(t2); };
-  }, []);
+  }, [skipIntro]);
 
   useEffect(() => {
     document.documentElement.classList.toggle('is-loading', !ready);
@@ -710,6 +744,7 @@ const App = () => {
 
   return (
     <>
+      <Spotlight />
       {showLoader && <Loader hide={ready} />}
       <Header active={active} theme={theme} onToggleTheme={toggleTheme} ready={ready} />
       <SideRails ready={ready} />

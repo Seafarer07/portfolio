@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://natanaeladiwicaksono.vercel.app/sitemap.xml
